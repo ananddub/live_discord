@@ -7,7 +7,6 @@ import {
     NatsConnection,
     StringCodec,
 } from "nats";
-import { AuthNats } from "../enum/nats.enum";
 import { CONFIG } from "../config/config";
 
 const sc = StringCodec();

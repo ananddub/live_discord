@@ -1,9 +1,9 @@
-export enum AuthNats {
-    USER_CREATED = "user:created",
-    USER_DELETED = "user:deleted",
-    USER_UPDATED = "user:updated",
-    USER_LOGIN = "user:login",
-    USER_LOGOUT = "user:logout",
-    USER_GET_ALL = "user:get-all",
-    USER_GET_SINGLE = "user:get-single",
+export enum NatsUser {
+    CREATED = "user:created",
+    FRIEND = "user:friend",
+    REQUEST = "user:requested",
+    BLOCK = "user:block",
+    REJECT = "user:reject",
+    ONLINE = "user:online",
+    OFFLINE = "user:offline",
 }

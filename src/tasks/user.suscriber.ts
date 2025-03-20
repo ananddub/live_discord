@@ -1,9 +1,10 @@
-import { AuthNats } from "../enum/nats.enum";
+import redis from "../db/redis";
+import { NatsUser } from "../enum/nats.enum";
 import { User } from "../models/user.modal";
 import { UserNats } from "../types/user.types";
 import { startNatsSubscriber } from "./nats.suscriber";
 
-startNatsSubscriber(AuthNats.USER_CREATED, async (data) => {
+startNatsSubscriber(NatsUser.CREATED, async (data) => {
     const user = JSON.parse(data) as UserNats;
     const newUser = new User({
         _id: user.id,
@@ -11,16 +12,20 @@ startNatsSubscriber(AuthNats.USER_CREATED, async (data) => {
         bio: user.bio,
         friends: [],
         pending: [],
-        reject: [],
         block: [],
     });
     await newUser.save();
 });
 
-startNatsSubscriber(AuthNats.USER_DELETED, async (data) => {});
-startNatsSubscriber(AuthNats.USER_GET_ALL, async (data) => {});
-startNatsSubscriber(AuthNats.USER_GET_ALL, async (data) => {});
-startNatsSubscriber(AuthNats.USER_GET_SINGLE, async (data) => {});
-startNatsSubscriber(AuthNats.USER_UPDATED, async (data) => {});
-startNatsSubscriber(AuthNats.USER_LOGIN, async (data) => {});
-startNatsSubscriber(AuthNats.USER_LOGOUT, async (data) => {});
+startNatsSubscriber(NatsUser.FRIEND, async (data) => {});
+startNatsSubscriber(NatsUser.REQUEST, async (data) => {});
+startNatsSubscriber(NatsUser.BLOCK, async (data) => {});
+startNatsSubscriber(NatsUser.REJECT, async (data) => {});
+startNatsSubscriber(NatsUser.ONLINE, async (data) => {
+    const user = JSON.parse(data) as UserNats;
+    await redis.hset(`user:${user.id}`, "online");
+});
+startNatsSubscriber(NatsUser.OFFLINE, async (data) => {
+    const user = JSON.parse(data) as UserNats;
+    await redis.hdel(`user:${user.id}`, "online");
+});

@@ -27,12 +27,6 @@ const UserSchema = new mongoose.Schema(
                 ref: "User",
             },
         ],
-        reject: [
-            {
-                type: String,
-                ref: "User",
-            },
-        ],
         block: [
             {
                 type: String,
@@ -59,23 +53,13 @@ UserSchema.path("pending").validate(
     "Duplicate pending IDs not allowed"
 );
 
-UserSchema.path("reject").validate(
-    uniqueArrayValidator,
-    "Duplicate reject IDs not allowed"
-);
-
 UserSchema.path("block").validate(
     uniqueArrayValidator,
     "Duplicate block IDs not allowed"
 );
 
 UserSchema.pre("save", function (next) {
-    const allIds = [
-        ...this.friends,
-        ...this.pending,
-        ...this.reject,
-        ...this.block,
-    ];
+    const allIds = [...this.friends, ...this.pending, ...this.block];
 
     const totalLength = allIds.length;
     const uniqueLength = new Set(allIds).size;
